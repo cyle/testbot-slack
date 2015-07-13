@@ -1,0 +1,12 @@
+{
+	"name": "testbot",
+	"version": "0.0.1",
+	"description": "A bot for testing, baby.",
+	"author": {
+		"name": "Your Name Here!!"
+	},
+	"dependencies": {
+		"coffee-script": "1.6.3",
+		"slack-client": "1.2.0"
+	}
+}
