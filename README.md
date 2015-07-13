@@ -37,4 +37,4 @@ Nice.
 
 Right now the testbot just spits out info to console whenever anybody talks. Yaaaay!
 
-Add more
+Add more responses and whatnot by editing the `parse_message()` function.
