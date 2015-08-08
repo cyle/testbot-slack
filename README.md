@@ -35,6 +35,6 @@ Nice.
 
 ## Usage
 
-Right now the testbot just spits out info to console whenever anybody talks. Yaaaay!
+The testbot will respond with whatever the message following the bot trigger along with the user and the channel. For example, if you set the trigger as `.test`, a message of `.test yo` will respond with "[user] said 'yo' in [channel]".
 
-Add more responses and whatnot by editing the `parse_message()` function.
+![Imgur](http://i.imgur.com/O0ESEpz.png)
