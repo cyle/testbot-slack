@@ -1,6 +1,7 @@
 /*
 
     testbot. whoa.
+    now with 100% more Tumblrn magic.
 
 */
 
@@ -23,59 +24,27 @@ var config = require(config_file);
 
 // primary bot config
 var bot_name = config.bot_name;
+var bot_trigger = config.bot_trigger;
 
 // init new instance of the slack real time client
 var slack = new slack_client(config.api_token);
 
 slack.on('open', function() {
-  console.log(bot_name + ' is online, listening...');
+  console.log(bot_name + ' is online, listening for ' + bot_trigger + ' ...');
   connected = true;
 });
 
 slack.on('message', function(message) {
 
-  // relevant:
-  // message.type = message,
-
   if (message.type == 'message') {
-
-    // relevant: message.text, message.channel, message.user, message.ts
-
-    // store what kind of message this is
-    var message_realtype = 'unknown';
-    if (message.channel[0] == 'C') {
-      message_realtype = 'channel';
-    } else if (message.channel[0] == 'G') {
-      message_realtype = 'group';
-    } else if (message.channel[0] == 'D') {
-      message_realtype = 'dm';
-    }
-
     // if there is no user, then it's probably not something we need to worry about
     if (message.user == undefined) {
       return;
     }
 
-    // get user info
-    var user_from = slack.getUserByID(message.user);
-    // console.log(user_from);
-    //console.log(user_from);
-    // user_from has .name and .id and more
-
-    // fetch channel/group/dm object
-    var where = slack.getChannelGroupOrDMByID(message.channel);
-    // console.log(where);
-    // where has .id and .name
-
-        if (message_realtype != 'channel') {
-            say('sorry, but i do not respond to direct messages or in private groups; you could be cheating!', where);
-            return;
-        }
-
     // send the incoming message off to be parsed + responded to
-    parse_message(message, user_from, message_realtype);
+    handle_message(message);
   } else {
-    console.log(message);
     return; // do nothing with other types of messages for now
   }
 });
@@ -93,6 +62,7 @@ function getRandomInt(min, max) {
 function say(with_what, where) {
   // first send typing indicator
   where.sendMessage({"type": "typing"});
+
   // ok now send the actual message in a little while
   // this fuzziness makes the bot seem almost human
   setTimeout(function() {
@@ -100,20 +70,25 @@ function say(with_what, where) {
   }, getRandomInt(500, 1200));
 }
 
-// parse incoming message object, username, and message type
-function parse_message(message_obj, user, message_type) {
-  var username = user.name;
-
+// handle an incoming message object
+function handle_message(message_obj) {
   var chatline = message_obj.text.trim();
-  // fetch channel/group/dm object
-  var where = slack.getChannelGroupOrDMByID(message_obj.channel);
-  // console.log(where);
-  // where has .id and .name, if needed
 
-    if (/^.+$/i.test(chatline)) {
-    console.log('new chat: ' + chatline);
+  if (chatline.lastIndexOf(bot_trigger, 0)  === 0) {
+    // where did this message come from and from which user??
+    var where = slack.getChannelGroupOrDMByID(message_obj.channel);
+    var user = slack.getUserByID(message_obj.user);
+    say(build_response_message(user, where, chatline), where);
   }
 
+}
+
+function build_response_message(user, where, what) {
+  return user.name + " said '" + strip_trigger(what) + "' in " + where.name;
+}
+
+function strip_trigger(text) {
+  return text.replace(bot_trigger + ' ', '');
 }
 
 // actually log in and connect!
