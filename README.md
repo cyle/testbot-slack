@@ -37,4 +37,4 @@ Nice.
 
 The testbot will respond with whatever the message following the bot trigger along with the user and the channel. For example, if you set the trigger as `.test`, a message of `.test yo` will respond with "[user] said 'yo' in [channel]".
 
-[Imgur](http://i.imgur.com/O0ESEpz.png)
+![Imgur](http://i.imgur.com/O0ESEpz.png)
