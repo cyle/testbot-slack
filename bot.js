@@ -4,11 +4,9 @@
 
 */
 
-// coffeescript is needed for the slack-client lib
-var CoffeeScript = require('coffee-script');
-
 // the offical slack client lib
 var slack_client = require('slack-client');
+var Message = require('./node_modules/slack-client/src/message');
 
 // check for a config file when calling this script, we need it
 if (process.argv.length < 3 || process.argv[2] == undefined) {
@@ -90,12 +88,25 @@ function getRandomInt(min, max) {
 // send a message to the specified channel/group/whatever
 // "where" needs to be a channel/group/dm object
 function say(with_what, where) {
+	if (with_what === undefined || where === undefined) {
+		console.error('uhhh dunno what to say or where');
+		return;
+	}
 	// first send typing indicator
-	where.sendMessage({"type": "typing"});
+	var typing_indicator = new Message(slack, {
+		'type': 'typing'
+	});
+	where.sendMessage(typing_indicator);
 	// ok now send the actual message in a little while
 	// this fuzziness makes the bot seem almost human
 	setTimeout(function() {
-		where.sendMessage({'type': 'message', 'text': with_what, 'link_names': 1, 'parse': 'full'});
+		var the_message = new Message(slack, {
+			'type': 'message',
+			'text': with_what,
+			'link_names': 1,
+			'parse': 'full'
+		});
+		where.sendMessage(the_message);
 	}, getRandomInt(500, 1200));
 }
 
@@ -110,7 +121,8 @@ function parse_message(message_obj, user, message_type) {
 	// where has .id and .name, if needed
 
     if (/^.+$/i.test(chatline)) {
-		console.log('new chat: ' + chatline);
+		//console.log('new chat: ' + chatline);
+		say(username + ' said: ' + chatline, where);
 	}
 
 }

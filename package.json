@@ -6,7 +6,6 @@
 		"name": "Your Name Here!!"
 	},
 	"dependencies": {
-		"coffee-script": "1.6.3",
-		"slack-client": "1.2.0"
+		"slack-client": "1.4.0"
 	}
 }
