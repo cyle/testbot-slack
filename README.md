@@ -20,7 +20,7 @@ Run `npm install` to install dependencies.
 
 Rename `config.sample.js` to `config.js` and edit it with your own config.
 
-Run `node /path/to/bot.js /path/to/config.js` to get it running.
+Run `node /path/to/bot.js /path/to/config.js` to get it running. Even if your config file is in the same directory as the bot, you still have to specify the relative path, i.e. `./config.js`.
 
 Invite testbot to your channel!
 
