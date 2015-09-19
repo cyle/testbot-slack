@@ -31,7 +31,8 @@ slack.on('open', function() {
 });
 
 slack.on('error', function(err) {
-	console.error('there was an error with slack: ' + err);
+	console.error('there was an error with slack: ');
+	console.error(err);
 });
 
 slack.on('message', function(message) {
@@ -96,6 +97,12 @@ function getRandomInt(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+// add a unicode blank space to a string
+// useful for using names in messages without triggering, i.e. add_zerowidth(username)
+function add_zerowidth(wat) {
+	return wat.substring(0, 1) + '\u200B' + wat.substring(1);
+}
+
 // send a message to the specified channel/group/whatever
 // "where" needs to be a channel/group/dm object
 function say(with_what, where) {
@@ -121,20 +128,73 @@ function say(with_what, where) {
 	}, getRandomInt(500, 1200));
 }
 
+// send an attachment to the specified channel/group/whatever
+// "where" needs to be a channel/group/dm object
+function attach(with_what, where) {
+	if (with_what === undefined || where === undefined) {
+		console.error('uhhh dunno what to say or where');
+		return;
+	}
+	// first send typing indicator
+	var typing_indicator = new Message(slack, {
+		'type': 'typing'
+	});
+	where.sendMessage(typing_indicator);
+	// ok now send the actual message in a little while
+	// this fuzziness makes the bot seem almost human
+	setTimeout(function() {
+		// there are a lot of options here, i've filled out a bunch
+		// figure out how you want to use the with_what variable from the function call
+		// documentation: https://api.slack.com/docs/attachments
+		var attachments = [
+			{
+				"fallback": "Required plain-text summary of the attachment.",
+				"pretext": "Optional text that appears above the attachment block",
+				"title": "An optional title for your attachment thing",
+				"title_link": "http://whatever.com/lol/",
+				"color": "#00ff00",
+				"text": "The actual attachment text here, *bold* _italics_ `code`",
+				"mrkdwn_in": ["text"]
+			}
+		];
+		var params = {
+			"type": "message",
+			"channel": where.id,
+			"as_user": true,
+			"parse": "full",
+			"attachments": JSON.stringify(attachments)
+		};
+		slack._apiCall('chat.postMessage', params, function(wat) {
+			if (wat.ok === false) {
+				console.error(wat);
+			}
+		});
+	}, getRandomInt(500, 900));
+}
+
 // parse incoming message object, username, and message type
 function parse_message(message_obj, user, message_type) {
 	var username = user.name;
 
+	// don't watch your own messages, stupid bot
+	if (username === bot_name) {
+		return;
+	}
+
 	var chatline = message_obj.text.trim();
 	// fetch channel/group/dm object
 	var where = slack.getChannelGroupOrDMByID(message_obj.channel);
-	// console.log(where);
+	//console.log(where);
 	// where has .id and .name, if needed
 
     if (/^.+$/i.test(chatline)) {
 		//console.log('new chat: ' + chatline);
+		// say something in the same channel that this came from:
 		say(username + ' said: ' + chatline, where);
 	}
+
+	// use an attachment, see function above
+	//attach('lol', where);
 
 }
 

@@ -8,21 +8,23 @@ You need an API key for your bot.
 
 Go to your Slack instance, go to Integrations, then Bot integrations, and make a new one.
 
-Grab that API key. Save it for the config file in a second.
+Grab that API key. Copy it for use in the bot's config file in the next section.
 
-### Manually...
+### Install + Config
 
 Clone this repo, make sure you have `node` and `npm` installed!
 
 Edit the `package.json` with your name.
 
+Rename `config.sample.js` to `config.js` and edit it with your own config (your API key and the bot's name).
+
+### Manually...
+
+Go to the directory where you cloned this bot. [Make sure you have `node` installed.](nodejs.org)
+
 Run `npm install` to install dependencies.
 
-Rename `config.sample.js` to `config.js` and edit it with your own config.
-
-Run `node /path/to/bot.js /path/to/config.js` to get it running. Even if your config file is in the same directory as the bot, you still have to specify the relative path, i.e. `./config.js`.
-
-Invite testbot to your channel!
+Run `node /path/to/bot.js /path/to/config.js` to get it running. Even if your config file is in the same directory as the bot, you still have to specify the relative path, i.e. `node bot.js ./config.js`.
 
 ### ... or with Docker
 
@@ -35,6 +37,10 @@ Nice.
 
 ## Usage
 
-Right now the testbot just spits out info to console whenever anybody talks. Yaaaay!
+Invite testbot to your channel! It'll be in your default `#general` channel by default.
+
+Right now the testbot just spits out info to console whenever anybody talks. Yaaaay! It's a start.
 
 Add more responses and whatnot by editing the `parse_message()` function.
+
+Also, you can use attachments, see the `attach()` function.
