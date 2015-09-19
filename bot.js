@@ -9,7 +9,7 @@ var slack_client = require('slack-client');
 var Message = require('./node_modules/slack-client/src/message');
 
 // check for a config file when calling this script, we need it
-if (process.argv.length < 3 || process.argv[2] == undefined) {
+if (process.argv.length < 3 || process.argv[2] === undefined) {
 	console.log('testbot requires a config file passed to it, please see README.');
 	process.exit(1);
 }
@@ -22,11 +22,16 @@ var config = require(process.argv[2]);
 var bot_name = config.bot_name;
 
 // init new instance of the slack real time client
-var slack = new slack_client(config.api_token);
+// second param is autoReconnect, which seems to be broken, so setting to FALSE
+var slack = new slack_client(config.api_token, false, false);
 
 slack.on('open', function() {
 	console.log(bot_name + ' is online, listening...');
 	connected = true;
+});
+
+slack.on('error', function(err) {
+	console.error('there was an error with slack: ' + err);
 });
 
 slack.on('message', function(message) {
@@ -49,7 +54,7 @@ slack.on('message', function(message) {
 		}
 
 		// if there is no user, then it's probably not something we need to worry about
-		if (message.user == undefined) {
+		if (message.user === undefined) {
 			return;
 		}
 
@@ -75,6 +80,12 @@ slack.on('message', function(message) {
 		console.log(message);
 		return; // do nothing with other types of messages for now
 	}
+});
+
+// intentionally crashing on websocket close
+slack.on('close', function() {
+	console.error('websocket closed for some reason, crashing!');
+	process.exit(1);
 });
 
 // add a trim() method for strings
