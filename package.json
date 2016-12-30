@@ -1,11 +1,11 @@
 {
-	"name": "testbot",
-	"version": "0.0.1",
-	"description": "A bot for testing, baby.",
-	"author": {
-		"name": "Your Name Here!!"
-	},
-	"dependencies": {
-		"slack-client": "1.4.0"
-	}
+  "name": "testbot",
+  "version": "0.0.1",
+  "description": "A bot for testing, baby.",
+  "author": {
+    "name": "Your Name Here!!"
+  },
+  "dependencies": {
+    "@slack/client": "^3.8.1"
+  }
 }

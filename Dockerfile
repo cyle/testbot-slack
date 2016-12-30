@@ -1,4 +1,4 @@
-FROM node:0.10
+FROM node:7
 MAINTAINER your-name@whatever.com
 RUN mkdir /app
 COPY package.json /app/
