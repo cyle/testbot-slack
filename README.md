@@ -20,7 +20,7 @@ Rename `config.sample.js` to `config.js` and edit it with your own config (your 
 
 ### Manually...
 
-Go to the directory where you cloned this bot. [Make sure you have `node` installed.](nodejs.org)
+Go to the directory where you cloned this bot. [Make sure you have `node` 7.x installed.](nodejs.org)
 
 Run `npm install` to install dependencies.
 
@@ -39,8 +39,6 @@ Nice.
 
 Invite testbot to your channel! It'll be in your default `#general` channel by default.
 
-Right now the testbot just spits out info to console whenever anybody talks. Yaaaay! It's a start.
+Right now the testbot just echos things whenever anybody talks. Yaaaay! It's a start.
 
 Add more responses and whatnot by editing the `parse_message()` function.
-
-Also, you can use attachments, see the `attach()` function.
